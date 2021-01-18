@@ -2,9 +2,14 @@
 
 echo "Change ip address"
 
-newip='22.22.00.00'
+cd exemplary_files
+
+#newip='22.22.00.00'
 pattern='ip'
 file=`ls | grep ip.xml`
+
+newip=$( echo $SSH_CLIENT | cut -d ' ' -f 1 )
+echo 'New ip: ' $newip
 
 address=$( cat "$file" | sed '/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/p')
 
