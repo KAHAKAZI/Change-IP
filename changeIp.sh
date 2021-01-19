@@ -8,10 +8,22 @@ cd exemplary_files
 pattern='ip'
 file=`ls | grep ip.xml`
 
-newip=$( echo $SSH_CLIENT | cut -d ' ' -f 1 )
+if [ $1 ]
+then
+	echo 'param given'
+	newip=$( echo $1 )
+	echo $newip
+else
+	echo 'param NOT given'
+	newip=$( echo $SSH_CLIENT | cut -d ' ' -f 1 )
+	echo $newip
+fi
+
+
+#newip=$( echo $SSH_CLIENT | cut -d ' ' -f 1 )
 echo 'New ip: ' $newip
 
-address=$( cat "$file" | sed '/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/p')
+#address=$( cat "$file" | sed '/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/p')
 
 #address="$(grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' <<< cat "$file")"
 
@@ -25,19 +37,40 @@ address=$( cat "$file" | sed '/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/p')
 
 #address=$(awk '/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/{print $0}' $file)
 
-for f in $(ls | grep $pattern);
-do
-	echo BEFORE
-	cat $f
-	address=$( cat $f | grep http | cut -d '/' -f 3 | cut -d ':' -f 1 )
-	sed -i "s/$address/$newip/g" $f
+#changeIp ${$newip}
 
-	echo ADDRESS
-	#cat $address
-	echo $address
-	#cat $file_content
+#VARIABLES
+echo 'pattern ' $pattern
+echo 'newip ' $newip
+echo 'file ' $f
 
-	echo AFTER
-	cat $file
+changeIp() {
 
-done
+	for f in $(ls | grep $pattern);
+	do
+		echo BEFORE
+		echo 'FILE_NAME ' $f
+		cat $f
+		address=$( cat $f | grep http | cut -d '/' -f 3 | cut -d ':' -f 1 )
+		sed -i "s/$address/$newip/g" $f
+
+		echo ADDRESS
+		#cat $address
+		echo $address
+		#cat $file_content
+
+		echo AFTER
+		cat $file
+
+	done
+
+}
+
+# Change IP function
+
+changeIp $pattern $newip $f
+
+
+
+
+
